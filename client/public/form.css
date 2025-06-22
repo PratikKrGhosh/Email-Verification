@@ -1,0 +1,15 @@
+/* body CSS */
+body {
+  justify-content: center;
+}
+
+/* form CSS */
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 1rem;
+  border: 2px solid black;
+}
