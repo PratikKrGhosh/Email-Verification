@@ -13,3 +13,11 @@ form {
   padding: 1rem;
   border: 2px solid black;
 }
+
+p {
+  width: 100%;
+  padding: 0.5rem;
+  color: red;
+  border-left: 3px solid red;
+  background-color: rgb(255, 225, 225);
+}
