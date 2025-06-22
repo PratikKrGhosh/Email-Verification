@@ -8,9 +8,12 @@
     <title>Home Page</title>
   </head>
   <body>
+    <% if (!user){ %>
     <h1>You are not Logged in</h1>
     <a href="/login"><button>Log in</button></a>
+    <% }else{ %>
     <h1>You are Logged in</h1>
     <a href="/logout"><button>Log out</button></a>
+    <% } %>
   </body>
 </html>

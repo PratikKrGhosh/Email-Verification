@@ -27,6 +27,10 @@ app.use(
 );
 
 app.use(authMiddleware);
+app.use((req, res, next) => {
+  res.locals.user = req.user;
+  return next();
+});
 
 app.use("/", authRoute);
 

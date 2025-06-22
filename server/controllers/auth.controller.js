@@ -2,10 +2,15 @@ import { loginSchema, signupSchema } from "../validator/form.validator.js";
 import { hashPassword, verifyPassword } from "../utils/hash.js";
 import { createUser, findUserByUsername } from "../services/user.services.js";
 import { validate_login_with_cookies } from "../utils/cookie.js";
-import { createNewSession } from "../services/session.service.js";
+import {
+  createNewSession,
+  deleteSession,
+  getSessionById,
+} from "../services/session.service.js";
 
 export const getSignupPage = (req, res) => {
   try {
+    if (req.user) return res.redirect("/");
     return res.status(200).render("signup", { errors: req.flash("errors") });
   } catch (err) {
     return res.status(404).render("pageNotFound");
@@ -14,6 +19,7 @@ export const getSignupPage = (req, res) => {
 
 export const getLoginPage = (req, res) => {
   try {
+    if (req.user) return res.redirect("/");
     return res.status(200).render("login", { errors: req.flash("errors") });
   } catch (err) {
     return res.status(404).render("pageNotFound");
@@ -21,6 +27,7 @@ export const getLoginPage = (req, res) => {
 };
 
 export const signup = async (req, res) => {
+  if (req.user) return res.redirect("/");
   try {
     const { data, error } = signupSchema.safeParse(req.body);
 
@@ -51,6 +58,7 @@ export const signup = async (req, res) => {
 };
 
 export const login = async (req, res) => {
+  if (req.user) return res.redirect("/");
   try {
     const { data, error } = loginSchema.safeParse(req.body);
 
@@ -92,8 +100,18 @@ export const login = async (req, res) => {
   }
 };
 
-export const logout = (req, res) => {
+export const logout = async (req, res) => {
   try {
+    if (!req.user) return res.redirect("/login");
+
+    const checkSession = await getSessionById(req.user.sessionId);
+    if (!checkSession || !checkSession.valid) return res.redirect("/login");
+
+    await deleteSession(req.user.sessionId);
+
+    res.clearCookie("access_token");
+    res.clearCookie("refresh_token");
+    return res.status(200).redirect("/login");
   } catch (err) {
     return res.status(400).send("Something went wrong");
   }

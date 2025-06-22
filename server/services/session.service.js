@@ -25,3 +25,12 @@ export const getSessionById = async (id) => {
     return null;
   }
 };
+
+export const deleteSession = async (id) => {
+  try {
+    const [data] = await db.delete(sessionTable).where(eq(sessionTable.id, id));
+    return data;
+  } catch (err) {
+    return null;
+  }
+};
