@@ -17,20 +17,20 @@ export const getLoginPage = (req, res) => {
 export const signup = (req, res) => {
   try {
   } catch (err) {
-    return res.status(404).render("pageNotFound");
+    return res.status(400).render("Something went wrong");
   }
 };
 
 export const login = (req, res) => {
   try {
   } catch (err) {
-    return res.status(404).render("pageNotFound");
+    return res.status(400).render("Something went wrong");
   }
 };
 
 export const logout = (req, res) => {
   try {
   } catch (err) {
-    return res.status(404).render("pageNotFound");
+    return res.status(400).render("Something went wrong");
   }
 };
