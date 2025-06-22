@@ -1,6 +1,8 @@
 import { loginSchema, signupSchema } from "../validator/form.validator.js";
 import { hashPassword, verifyPassword } from "../utils/hash.js";
 import { createUser, findUserByUsername } from "../services/user.services.js";
+import { validate_login_with_cookies } from "../utils/cookie.js";
+import { createNewSession } from "../services/session.service.js";
 
 export const getSignupPage = (req, res) => {
   try {
@@ -44,7 +46,7 @@ export const signup = async (req, res) => {
 
     return res.status(201).redirect("/login");
   } catch (err) {
-    return res.status(400).render("Something went wrong");
+    return res.status(400).send("Something went wrong");
   }
 };
 
@@ -76,15 +78,23 @@ export const login = async (req, res) => {
       return res.status(400).redirect("/login");
     }
 
+    const sessionData = await createNewSession({
+      userId: userData.id,
+      userAgent: req.headers["user-agent"],
+      ip: req.clientIp,
+    });
+
+    await validate_login_with_cookies(res, { userData, sessionData });
+
     return res.status(200).redirect("/");
   } catch (err) {
-    return res.status(400).render("Something went wrong");
+    return res.status(400).send("Something went wrong");
   }
 };
 
 export const logout = (req, res) => {
   try {
   } catch (err) {
-    return res.status(400).render("Something went wrong");
+    return res.status(400).send("Something went wrong");
   }
 };

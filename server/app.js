@@ -3,6 +3,8 @@ import path from "path";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import flash from "connect-flash";
+import requestIp from "request-ip";
+import authMiddleware from "./middlewares/auth.middleware.js";
 
 import authRoute from "./routes/auth.route.js";
 
@@ -10,6 +12,7 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(requestIp.mw());
 
 app.use(cookieParser());
 app.use(
@@ -23,9 +26,12 @@ app.use(
   express.static(path.join(import.meta.dirname, "..", "client", "public"))
 );
 
+app.use(authMiddleware);
+
 app.use("/", authRoute);
 
 app.get("/", (req, res) => {
+  console.log(req.user);
   res.status(200).render("index");
 });
 

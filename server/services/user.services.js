@@ -16,3 +16,11 @@ export const findUserByUsername = async (userName) => {
     .where(eq(usersTable.userName, userName));
   return user;
 };
+
+export const getUserById = async (id) => {
+  const [user] = await db
+    .select()
+    .from(usersTable)
+    .where(eq(usersTable.id, id));
+  return user;
+};

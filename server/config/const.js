@@ -1,0 +1,9 @@
+export const MILI_PER_SEC = 1000;
+const SEC_PER_MIN = 60;
+const MIN_PER_HOUR = 60;
+const HOUR_PER_DAY = 24;
+const DAY_PER_MONTH = 30;
+
+export const ACCESS_TOKEN_EXPIRY = 15 * SEC_PER_MIN * MILI_PER_SEC;
+export const REFRESH_TOKEN_EXPIRY =
+  15 * HOUR_PER_DAY * MIN_PER_HOUR * SEC_PER_MIN * MILI_PER_SEC;
