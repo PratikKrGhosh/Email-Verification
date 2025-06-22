@@ -1,0 +1,29 @@
+{
+  "name": "verify-email",
+  "version": "1.0.0",
+  "description": "This is a Simple project to practice email verification and Authentication",
+  "keywords": [
+    "authentication",
+    "email",
+    "email-verification",
+    "auth",
+    "form-validation",
+    "mysql",
+    "drizzle"
+  ],
+  "license": "MIT",
+  "author": "Pratik Kumar Ghosh",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon ./server/server.js"
+  },
+  "dependencies": {
+    "connect-flash": "^0.1.1",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "express-session": "^1.18.1",
+    "zod": "^3.25.67"
+  }
+}
