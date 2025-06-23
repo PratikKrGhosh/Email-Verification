@@ -7,6 +7,12 @@ import {
   deleteSession,
   getSessionById,
 } from "../services/session.service.js";
+import { generateEmailVerifyToken } from "../utils/token.generate.js";
+import {
+  createVerifyEmailData,
+  deleteVerifyEmailDataByUserId,
+} from "../services/verifyEmail.service.js";
+import { generateEmailVerifyURL } from "../services/emailVerifyLink.js";
 
 export const getSignupPage = (req, res) => {
   try {
@@ -129,6 +135,27 @@ export const logout = async (req, res) => {
 export const verifyEmail = async (req, res) => {
   try {
     if (!req.user) return res.redirect("/login");
+  } catch (err) {
+    return res.status(400).send("Something went wrong");
+  }
+};
+
+export const sendMail = async (req, res) => {
+  try {
+    if (!req.user) return res.redirect("/login");
+    const token = generateEmailVerifyToken();
+
+    const { id: userId } = await findUserByUsername(req.user.userName);
+
+    await deleteVerifyEmailDataByUserId(userId);
+    await createVerifyEmailData({ userId, token });
+
+    const generatedUri = generateEmailVerifyURL({
+      token,
+      email: req.user.email,
+    });
+
+    return res.redirect("/verify/email");
   } catch (err) {
     return res.status(400).send("Something went wrong");
   }

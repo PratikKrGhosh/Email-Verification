@@ -10,7 +10,9 @@
   <body>
     <h1>Let's Verify Your Email</h1>
     <h4><%= user.email %></h4>
-    <a href=""><button>Resend Verification Code</button></a>
+    <form action="/verify/email" method="post">
+      <button type="submit">Resend Verification Code</button>
+    </form>
     <form action="/verify/email-token" method="get">
       <input type="text" name="token" id="token" placeholder="8 Digit Token" />
       <button type="submit">Verify</button>
