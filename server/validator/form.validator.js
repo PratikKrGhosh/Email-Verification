@@ -1,4 +1,5 @@
 import z from "zod";
+import { email } from "zod/v4";
 
 export const loginSchema = z.object({
   userName: z
@@ -21,4 +22,9 @@ export const signupSchema = loginSchema.extend({
       message: "Name Can't have more than 20 charecters",
     }),
   email: z.string().email({ message: "Please enter a valid email" }),
+});
+
+export const emailVerifySchema = z.object({
+  email: z.string().email({ message: "Invalid Email" }),
+  token: z.string().trim().length({ message: "Token length is 8" }),
 });

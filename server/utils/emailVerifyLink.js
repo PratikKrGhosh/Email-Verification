@@ -6,6 +6,7 @@ export const generateEmailVerifyURL = ({ token, email }) => {
     url.searchParams.append("token", token);
     url.searchParams.append("email", email);
     return url.toString();
+    // return url.toString().replace("https://", "");
   } catch (err) {
     return null;
   }

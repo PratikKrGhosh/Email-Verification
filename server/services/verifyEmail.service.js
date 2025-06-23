@@ -23,3 +23,16 @@ export const deleteVerifyEmailDataByUserId = async (userId) => {
     return null;
   }
 };
+
+export const getVerifyEmailDataByUserId = async (userId) => {
+  try {
+    const [data] = await db
+      .select()
+      .from(verifyEmail)
+      .where(eq(verifyEmail.userId, userId));
+
+    return data;
+  } catch (err) {
+    return null;
+  }
+};

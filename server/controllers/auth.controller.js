@@ -1,18 +1,29 @@
-import { loginSchema, signupSchema } from "../validator/form.validator.js";
+import {
+  emailVerifySchema,
+  loginSchema,
+  signupSchema,
+} from "../validator/form.validator.js";
 import { hashPassword, verifyPassword } from "../utils/hash.js";
-import { createUser, findUserByUsername } from "../services/user.services.js";
+import {
+  createUser,
+  findUserByUsername,
+  getUserByEmail,
+  updateVerifyStatus,
+} from "../services/user.services.js";
 import { validate_login_with_cookies } from "../utils/cookie.js";
 import {
   createNewSession,
   deleteSession,
   getSessionById,
+  getSessionByUserId,
 } from "../services/session.service.js";
 import { generateEmailVerifyToken } from "../utils/token.generate.js";
 import {
   createVerifyEmailData,
   deleteVerifyEmailDataByUserId,
+  getVerifyEmailDataByUserId,
 } from "../services/verifyEmail.service.js";
-import { generateEmailVerifyURL } from "../services/emailVerifyLink.js";
+import { generateEmailVerifyURL } from "../utils/emailVerifyLink.js";
 import { sendEmail } from "../libs/nodemailer.js";
 
 export const getSignupPage = (req, res) => {
@@ -36,7 +47,9 @@ export const getLoginPage = (req, res) => {
 export const getVerifyEmailPage = (req, res) => {
   try {
     if (!req.user) return res.redirect("/login");
-    return res.status(200).render("verifyEmail");
+    return res
+      .status(200)
+      .render("verifyEmail", { errors: req.flash("errors") });
   } catch (err) {
     return res.status(404).render("pageNotFound");
   }
@@ -134,8 +147,33 @@ export const logout = async (req, res) => {
 };
 
 export const verifyEmail = async (req, res) => {
+  if (!req.user) return res.redirect("/login");
   try {
-    if (!req.user) return res.redirect("/login");
+    const { data, error } = emailVerifySchema.safeParse(req.query);
+
+    if (error) {
+      req.flash("errors", error.errors[0].message);
+      return res.redirect("/verify/email");
+    }
+
+    const { token, email } = data;
+
+    const userData = await getUserByEmail(email);
+
+    if (!userData.id) return res.redirect("/login");
+
+    const tokenData = await getVerifyEmailDataByUserId(userData.id);
+
+    if (!tokenData || !tokenData.valid || tokenData.token != token)
+      return res.send("Invalid Token");
+
+    await updateVerifyStatus(userData.id);
+    await deleteVerifyEmailDataByUserId(userData.id);
+
+    const sessionData = await getSessionByUserId(userData.id);
+    await validate_login_with_cookies(res, { userData, sessionData });
+
+    return res.redirect("/");
   } catch (err) {
     return res.status(400).send("Something went wrong");
   }
@@ -159,7 +197,9 @@ export const sendMail = async (req, res) => {
     await sendEmail({
       to: req.user.email,
       subject: "Verify your Email",
-      html: `<h3>Token: </h3>${token}<br><h3>Link: </h3>${generatedUri}`,
+      html: `
+      <h3>Token: </h3>${token} <br>
+      <a target="_blank" href="${generatedUri}">Click to Verify</a>`,
     });
 
     return res.redirect("/verify/email");

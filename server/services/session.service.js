@@ -26,6 +26,18 @@ export const getSessionById = async (id) => {
   }
 };
 
+export const getSessionByUserId = async (userId) => {
+  try {
+    const [data] = await db
+      .select()
+      .from(sessionTable)
+      .where(eq(sessionTable.userId, userId));
+    return data;
+  } catch (err) {
+    return null;
+  }
+};
+
 export const deleteSession = async (id) => {
   try {
     const [data] = await db.delete(sessionTable).where(eq(sessionTable.id, id));

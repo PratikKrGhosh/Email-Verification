@@ -24,3 +24,28 @@ export const getUserById = async (id) => {
     .where(eq(usersTable.id, id));
   return user;
 };
+
+export const getUserByEmail = async (email) => {
+  try {
+    const [data] = await db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.email, email));
+
+    return data;
+  } catch (err) {
+    return null;
+  }
+};
+
+export const updateVerifyStatus = async (id) => {
+  try {
+    const [data] = await db
+      .update(usersTable)
+      .set({ isVerified: true })
+      .where(eq(usersTable.id, id));
+    return data;
+  } catch (err) {
+    return null;
+  }
+};
