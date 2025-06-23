@@ -13,6 +13,7 @@ import {
   deleteVerifyEmailDataByUserId,
 } from "../services/verifyEmail.service.js";
 import { generateEmailVerifyURL } from "../services/emailVerifyLink.js";
+import { sendEmail } from "../libs/nodemailer.js";
 
 export const getSignupPage = (req, res) => {
   try {
@@ -153,6 +154,12 @@ export const sendMail = async (req, res) => {
     const generatedUri = generateEmailVerifyURL({
       token,
       email: req.user.email,
+    });
+
+    await sendEmail({
+      to: req.user.email,
+      subject: "Verify your Email",
+      html: `<h3>Token: </h3>${token}<br><h3>Link: </h3>${generatedUri}`,
     });
 
     return res.redirect("/verify/email");
