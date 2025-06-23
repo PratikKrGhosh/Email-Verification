@@ -41,7 +41,6 @@ app.use((req, res, next) => {
 app.use("/", authRoute);
 
 app.get("/", (req, res) => {
-  console.log(req.user);
   res.status(200).render("index");
 });
 

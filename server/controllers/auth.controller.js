@@ -26,6 +26,15 @@ export const getLoginPage = (req, res) => {
   }
 };
 
+export const getVerifyEmailPage = (req, res) => {
+  try {
+    if (!req.user) return res.redirect("/login");
+    return res.status(200).render("verifyEmail");
+  } catch (err) {
+    return res.status(404).render("pageNotFound");
+  }
+};
+
 export const signup = async (req, res) => {
   if (req.user) return res.redirect("/");
   try {
@@ -112,6 +121,14 @@ export const logout = async (req, res) => {
     res.clearCookie("access_token");
     res.clearCookie("refresh_token");
     return res.status(200).redirect("/login");
+  } catch (err) {
+    return res.status(400).send("Something went wrong");
+  }
+};
+
+export const verifyEmail = async (req, res) => {
+  try {
+    if (!req.user) return res.redirect("/login");
   } catch (err) {
     return res.status(400).send("Something went wrong");
   }

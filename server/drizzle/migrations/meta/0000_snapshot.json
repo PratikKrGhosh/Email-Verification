@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "44df1502-0eb4-450c-85c5-0fe485ee2130",
+  "id": "7c9335e1-28ce-4e4f-a1b3-8b111664ae69",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "session_table": {
@@ -119,6 +119,14 @@
           "notNull": true,
           "autoincrement": false
         },
+        "is_verified_email": {
+          "name": "is_verified_email",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
         "password": {
           "name": "password",
           "type": "varchar(255)",
@@ -168,6 +176,82 @@
           ]
         }
       },
+      "checkConstraint": {}
+    },
+    "verify_email": {
+      "name": "verify_email",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "valid": {
+          "name": "valid",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "token": {
+          "name": "token",
+          "type": "varchar(8)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "expire_at": {
+          "name": "expire_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(CURRENT_TIMESTAMP + INTERVAL 15 MINUTE)"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "verify_email_user_id_users_table_id_fk": {
+          "name": "verify_email_user_id_users_table_id_fk",
+          "tableFrom": "verify_email",
+          "tableTo": "users_table",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "verify_email_id": {
+          "name": "verify_email_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
       "checkConstraint": {}
     }
   },

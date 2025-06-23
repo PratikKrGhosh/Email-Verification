@@ -15,6 +15,7 @@ export const validate_login_with_cookies = async (
         name: userData.name,
         userName: userData.userName,
         email: userData.email,
+        isVerified: userData.isVerified,
         sessionId: sessionData.id,
       },
       ACCESS_TOKEN_EXPIRY / MILI_PER_SEC

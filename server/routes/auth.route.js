@@ -14,4 +14,8 @@ authRoute
 
 authRoute.route("/logout").get(authController.logout);
 
+authRoute.route("/verify/email").get(authController.getVerifyEmailPage);
+
+authRoute.route("/verify/email-token").get(authController.verifyEmail);
+
 export default authRoute;
