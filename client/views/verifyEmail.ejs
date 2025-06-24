@@ -14,7 +14,14 @@
       <button type="submit">Resend Verification Code</button>
     </form>
     <form action="/verify/email-token" method="get">
-      <input type="text" name="token" id="token" placeholder="8 Digit Token" />
+      <input
+        type="text"
+        name="token"
+        maxlength="8"
+        id="token"
+        placeholder="8 Digit Token"
+      />
+      <input type="hidden" name="email" value="<%= user.email %>" id="email" />
       <% if (errors){ errors.forEach(error => { %>
       <p><%= error %></p>
       <% });} %>

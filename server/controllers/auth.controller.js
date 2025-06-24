@@ -8,6 +8,7 @@ import {
   createUser,
   findUserByUsername,
   getUserByEmail,
+  getUserById,
   updateVerifyStatus,
 } from "../services/user.services.js";
 import { validate_login_with_cookies } from "../utils/cookie.js";
@@ -158,18 +159,19 @@ export const verifyEmail = async (req, res) => {
 
     const { token, email } = data;
 
-    const userData = await getUserByEmail(email);
+    const { id } = await getUserByEmail(email);
 
-    if (!userData.id) return res.redirect("/login");
+    if (!id) return res.redirect("/login");
 
-    const tokenData = await getVerifyEmailDataByUserId(userData.id);
+    const tokenData = await getVerifyEmailDataByUserId(id);
 
     if (!tokenData || !tokenData.valid || tokenData.token != token)
       return res.send("Invalid Token");
 
-    await updateVerifyStatus(userData.id);
-    await deleteVerifyEmailDataByUserId(userData.id);
+    await updateVerifyStatus(id);
+    await deleteVerifyEmailDataByUserId(id);
 
+    const userData = await getUserById(id);
     const sessionData = await getSessionByUserId(userData.id);
     await validate_login_with_cookies(res, { userData, sessionData });
 
@@ -180,8 +182,8 @@ export const verifyEmail = async (req, res) => {
 };
 
 export const sendMail = async (req, res) => {
+  if (!req.user) return res.redirect("/login");
   try {
-    if (!req.user) return res.redirect("/login");
     const token = generateEmailVerifyToken();
 
     const { id: userId } = await findUserByUsername(req.user.userName);
