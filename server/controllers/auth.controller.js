@@ -7,7 +7,6 @@ import { hashPassword, verifyPassword } from "../utils/hash.js";
 import {
   createUser,
   findUserByUsername,
-  getUserByEmail,
   getUserById,
   updateVerifyStatus,
 } from "../services/user.services.js";
@@ -22,7 +21,6 @@ import { generateEmailVerifyToken } from "../utils/token.generate.js";
 import {
   delete_and_create_verify_email_data,
   deleteVerifyEmailDataByUserId,
-  getVerifyEmailDataByUserId,
 } from "../services/verifyEmail.service.js";
 import { generateEmailVerifyURL } from "../utils/emailVerifyLink.js";
 import { sendEmail } from "../libs/nodemailer.js";
