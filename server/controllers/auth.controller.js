@@ -20,7 +20,7 @@ import {
 } from "../services/session.service.js";
 import { generateEmailVerifyToken } from "../utils/token.generate.js";
 import {
-  createVerifyEmailData,
+  delete_and_create_verify_email_data,
   deleteVerifyEmailDataByUserId,
   getVerifyEmailDataByUserId,
 } from "../services/verifyEmail.service.js";
@@ -188,8 +188,7 @@ export const sendMail = async (req, res) => {
 
     const { id: userId } = await findUserByUsername(req.user.userName);
 
-    await deleteVerifyEmailDataByUserId(userId);
-    await createVerifyEmailData({ userId, token });
+    await delete_and_create_verify_email_data({ userId, token });
 
     const generatedUri = generateEmailVerifyURL({
       token,
@@ -201,7 +200,7 @@ export const sendMail = async (req, res) => {
       subject: "Verify your Email",
       html: `
       <h3>Token: </h3>${token} <br>
-      <a target="_blank" href="${generatedUri}">Click to Verify</a>`,
+      <a href="${generatedUri}">Click to Verify</a>`,
     });
 
     return res.redirect("/verify/email");

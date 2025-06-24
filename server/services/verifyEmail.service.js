@@ -36,3 +36,18 @@ export const getVerifyEmailDataByUserId = async (userId) => {
     return null;
   }
 };
+
+export const delete_and_create_verify_email_data = async ({
+  userId,
+  token,
+}) => {
+  return db.transaction(async (tx) => {
+    try {
+      await tx.delete(verifyEmail).where(eq(verifyEmail.userId, userId));
+      await tx.insert(verifyEmail).values({ userId, token });
+    } catch (err) {
+      console.error("Transaction Failed");
+      throw new Error(err);
+    }
+  });
+};
