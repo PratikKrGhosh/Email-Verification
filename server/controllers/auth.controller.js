@@ -26,6 +26,7 @@ import {
 } from "../services/verifyEmail.service.js";
 import { generateEmailVerifyURL } from "../utils/emailVerifyLink.js";
 import { sendEmail } from "../libs/nodemailer.js";
+import { getTokenDataWithUser } from "../services/join.service.js";
 
 export const getSignupPage = (req, res) => {
   try {
@@ -159,19 +160,18 @@ export const verifyEmail = async (req, res) => {
 
     const { token, email } = data;
 
-    const { id } = await getUserByEmail(email);
+    const tokenDataWithUser = await getTokenDataWithUser({
+      token,
+      email,
+    });
 
-    if (!id) return res.redirect("/login");
-
-    const tokenData = await getVerifyEmailDataByUserId(id);
-
-    if (!tokenData || !tokenData.valid || tokenData.token != token)
+    if (!tokenDataWithUser || !tokenDataWithUser.valid)
       return res.send("Invalid Token");
 
-    await updateVerifyStatus(id);
-    await deleteVerifyEmailDataByUserId(id);
+    await updateVerifyStatus(tokenDataWithUser.userId);
+    await deleteVerifyEmailDataByUserId(tokenDataWithUser.userId);
 
-    const userData = await getUserById(id);
+    const userData = await getUserById(tokenDataWithUser.userId);
     const sessionData = await getSessionByUserId(userData.id);
     await validate_login_with_cookies(res, { userData, sessionData });
 
